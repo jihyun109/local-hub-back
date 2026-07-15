@@ -48,6 +48,12 @@ class PlaceDetailItem(BaseModel):
     longitude: float
 
 
+class PlaceNameItem(BaseModel):
+    """id/이름만 반환하는 경량 목록용 스키마."""
+    id: int
+    name: str
+
+
 class PlaceSummary(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

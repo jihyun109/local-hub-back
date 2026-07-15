@@ -47,6 +47,11 @@ def get_places(
     return query.order_by(Place.name).all()
 
 
+def get_place_names(db: Session):
+    """전체 place의 id, name만 조회합니다."""
+    return db.query(Place.id, Place.name).order_by(Place.name).all()
+
+
 def get_place_by_id(db: Session, place_id: int) -> Place | None:
     """ID로 단일 place 상세 정보를 조회합니다."""
     return (
