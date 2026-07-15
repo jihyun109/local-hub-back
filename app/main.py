@@ -6,12 +6,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.router import api_router
 from app.core.config import settings
 from app.db.init_db import init_db
+from scripts.seed_database import seed
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # MVP 단계라 마이그레이션 도구 없이 기동 시 테이블을 생성한다.
+    # MVP 단계라 마이그레이션 도구 없이 기동 시 테이블을 생성하고, 매번 시드 데이터로 초기화한다.
     init_db()
+    seed()
     yield
 
 

@@ -24,8 +24,9 @@ SEED_FILES = (
     SCRIPT_DIR / "seed_place_types.sql",
     SCRIPT_DIR / "seed_post_categories.sql",
     SCRIPT_DIR / "seed_places.sql",
+    SCRIPT_DIR / "seed_posts.sql",
 )
-SEEDED_TABLES = ("자치구", "place_type", "post_category", "place")
+SEEDED_TABLES = ("자치구", "place_type", "post_category", "place", "post")
 
 
 def seed(target: Path | None = None) -> None:
@@ -47,8 +48,13 @@ def _execute_sql(sql_path: Path) -> None:
     sql = sql_path.read_text(encoding="utf-8")
     with engine.raw_connection() as raw:
         cursor = raw.cursor()
+        # 각 시드 파일이 자기 테이블만 DELETE하므로, 재실행 시 다른 테이블이 참조 중인
+        # 상위 테이블(자치구, place_type 등)을 지우려 하면 FK 위반이 난다. 시드 스크립트
+        # 실행 중에는 일시적으로 FK 검사를 끄고, 끝나면 다시 켠다.
+        cursor.execute("PRAGMA foreign_keys=OFF")
         cursor.executescript(sql)
         raw.commit()
+        cursor.execute("PRAGMA foreign_keys=ON")
 
 
 def report() -> None:
