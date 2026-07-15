@@ -23,8 +23,11 @@ router = APIRouter()
 def get_main_places(db: Session = Depends(get_db)):
     """메인 페이지: likes 기반 top10 place 정보를 조회합니다."""
     rows = get_top_places(db, limit=10)
+    #변경
     return [
         PlaceMainItem(
+
+            id = place.id,
             place_type=PlaceTypeSchema(
                 id=place.type.id,
                 code=place.type.code,
@@ -60,6 +63,7 @@ def get_place_list(
     )
     return [
         PlaceSummaryItem(
+            id=place.id,
             place_type=PlaceTypeSchema(
                 id=place.type.id,
                 code=place.type.code,
