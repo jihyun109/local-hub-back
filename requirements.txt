@@ -5,6 +5,8 @@ pydantic>=2.12
 pydantic-settings>=2.7
 bcrypt>=4.2
 python-dotenv>=1.0
+#챗봇을 위한 openai 패키지
+openai>=1.54
 
 # dev
 pytest>=8.3
