@@ -12,6 +12,10 @@ from app.schemas.place import (
     PlaceTypeSchema,
 )
 
+from app.api.deps import DbSession
+from app.models.place import Place
+from app.schemas.place import PlaceListResponse, PlaceSummary
+
 router = APIRouter()
 
 
@@ -93,3 +97,18 @@ def get_place_detail(
         latitude=place.latitude,
         longitude=place.longitude,
     )
+
+@router.get("/name-district", response_model=PlaceListResponse)
+def list_places(db: DbSession) -> PlaceListResponse:
+    places = db.query(Place).all()
+    return {
+        "items": [
+            PlaceSummary(
+                id=place.id,
+                name=place.name,
+                district=place.district.name if place.district else "",
+            )
+            for place in places
+        ]
+    }
+

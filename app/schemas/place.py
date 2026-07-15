@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+
+from pydantic import BaseModel, ConfigDict
 
 
 class PlaceTypeSchema(BaseModel):
@@ -42,3 +43,16 @@ class PlaceDetailItem(BaseModel):
     operating_info: str | None = None
     latitude: float
     longitude: float
+
+
+class PlaceSummary(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    district: str
+
+
+class PlaceListResponse(BaseModel):
+    items: list[PlaceSummary]
+
