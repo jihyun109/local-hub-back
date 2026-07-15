@@ -112,10 +112,13 @@ def _serialize_post_list_item(post: Post) -> dict[str, Any]:
 
 
 # 게시글 한 건 조회
-def get_post(db: Session, post_id: int) -> dict[str, Any]:
+def get_post(db: Session, post_id: int, *, count_view: bool = True) -> dict[str, Any]:
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="게시글을 찾을 수 없습니다.")
+    if count_view:
+        post.views += 1
+        db.commit()
     db.refresh(post)
     return _serialize_post(db, post)
 
@@ -144,7 +147,7 @@ def create_post(db: Session, payload: dict[str, Any]) -> dict[str, Any]:
         author_name=payload["author_name"],
         password=payload["password"],
         district_id=payload.get("district_id"),
-        views=1,
+        views=0,
         likes=0,
         created_at=datetime.now(),
     )
@@ -157,7 +160,7 @@ def create_post(db: Session, payload: dict[str, Any]) -> dict[str, Any]:
         db.commit()
         db.refresh(post)
 
-    return get_post(db, post.id)
+    return get_post(db, post.id, count_view=False)
 
 
 # 비밀번호 확인
@@ -199,7 +202,7 @@ def update_post(db: Session, post_id: int, payload: dict[str, Any]) -> dict[str,
 
     db.commit()
     db.refresh(post)
-    return get_post(db, post.id)
+    return get_post(db, post.id, count_view=False)
 
 
 # 게시글 삭제
