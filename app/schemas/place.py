@@ -13,8 +13,10 @@ class DistrictSchema(BaseModel):
     name: str
 
 
+# id 첨가
 class PlaceMainItem(BaseModel):
-    """메인 페이지 top10 반환용 스키마."""
+    """메인 페이지 top10 반환용 스키마."""    
+    id: int
     place_type: PlaceTypeSchema
     name: str
     description: str | None = None
@@ -26,6 +28,7 @@ class PlaceMainItem(BaseModel):
 
 class PlaceSummaryItem(BaseModel):
     """관광/축제 목록 및 필터 반환용 스키마."""
+    id: int
     place_type: PlaceTypeSchema
     name: str
     description: str | None = None
