@@ -40,6 +40,7 @@ def list_posts(
     page: int = 1,
     size: int = 20,
     category_id: int | None = None,
+    category_code: str | None = None,
     district_id: int | None = None,
     keyword: str | None = None,
     sort: str = "recent",
@@ -59,14 +60,20 @@ def list_posts(
 
     if category_id is not None:
         query = query.filter(Post.category_id == category_id)
+    elif category_code:
+        category = db.query(PostCategory).filter(PostCategory.code == category_code).first()
+        query = query.filter(Post.category_id == (category.id if category else -1))
     if district_id is not None:
-        query = query.filter(Post.district_id == district_id)
+        # 글에 직접 지정된 지역구 또는 태그된 place의 지역구 중 하나라도 일치하면 노출
+        query = query.filter(
+            or_(Post.district_id == district_id, Place.district_id == district_id)
+        )
     if keyword:
         keyword_term = f"%{keyword.lower()}%"
         query = query.filter(
             or_(
                 Post.title.ilike(keyword_term),
-                Post.content.ilike(keyword_term),
+                Place.name.ilike(keyword_term),
             )
         )
 
