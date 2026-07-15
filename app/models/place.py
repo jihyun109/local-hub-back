@@ -26,8 +26,8 @@ class Place(Base):
     address: Mapped[str | None] = mapped_column(String(200))
     operating_info: Mapped[str | None] = mapped_column(String(200))
 
-    image_url_1: Mapped[str | None] = mapped_column(String(50))
-    image_url_2: Mapped[str | None] = mapped_column(String(50))
+    image_url_1: Mapped[str | None] = mapped_column(String(255))
+    image_url_2: Mapped[str | None] = mapped_column(String(255))
 
     type: Mapped["PlaceType"] = relationship(back_populates="places")  # noqa: F821
     district: Mapped["District"] = relationship(back_populates="places")  # noqa: F821
