@@ -10,5 +10,11 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite:///./localhub.db"
     BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:5173"]
 
+    OPENAI_API_KEY: str
+    OPENAI_MODEL: str = "gpt-5-mini"
+    CHAT_MAX_HISTORY: int = 20          # 저장할 최대 메시지(user+assistant) 개수
+
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
 
 settings = Settings()
