@@ -452,4 +452,4 @@ INSERT INTO `place` (`id`, `name`, `type_id`, `description`, `district_id`, `lat
 -- ------------------------------------------------------------
 -- SELECT COUNT(*) FROM `place`;                       -- 기대값: 422
 -- SELECT t.name, COUNT(*) FROM `place` p JOIN `place_type` t ON p.type_id = t.id GROUP BY t.name;
--- SELECT d.name, COUNT(*) FROM `place` p JOIN `district` d ON p.district_id = d.id GROUP BY d.name ORDER BY 2 DESC;
+-- SELECT d.name, COUNT(*) FROM `place` p JOIN `자치구` d ON p.district_id = d.id GROUP BY d.name ORDER BY 2 DESC;
