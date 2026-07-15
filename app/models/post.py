@@ -26,7 +26,7 @@ class Post(Base):
 
     # 작성 지역. NULL이면 '부산 전역'을 의미한다.
     district_id: Mapped[int | None] = mapped_column(
-        ForeignKey("district.id", ondelete="SET NULL"), index=True
+        ForeignKey("자치구.id", ondelete="SET NULL"), index=True
     )
 
     views: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
