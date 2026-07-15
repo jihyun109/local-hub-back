@@ -14,8 +14,8 @@ def chat(req: ChatRequest, request: Request):
     else:
         # request 객체에서 직접 클라이언트 IP 추출 (없을 경우를 대비해 예외 처리 보완)
         ip = request.client.host if request.client else "127.0.0.1"
-    reply = chat_service.ask(ip, req.message)
-    return ChatResponse(reply=reply)
+    result = chat_service.ask(ip, req.message)
+    return ChatResponse(**result)
 
 
 

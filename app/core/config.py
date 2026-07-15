@@ -13,7 +13,6 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str
     OPENAI_MODEL: str = "gpt-5-mini"
     CHAT_MAX_HISTORY: int = 20          # 저장할 최대 메시지(user+assistant) 개수
-    CHAT_SYSTEM_PROMPT: str = "당신은 친절한 관광 안내 챗봇입니다."
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
