@@ -3,7 +3,7 @@ from typing import Any
 
 from fastapi import HTTPException, status
 from sqlalchemy import desc, or_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, contains_eager, joinedload
 
 from app.models.district import District
 from app.models.place import Place
@@ -44,7 +44,18 @@ def list_posts(
     keyword: str | None = None,
     sort: str = "recent",
 ) -> dict[str, Any]:
-    query = db.query(Post)
+    # post -> post_place -> place -> district를 SQL JOIN으로 엮어서
+    # 게시글에 연결된 place의 지역구를 함께 가져온다 (place당 district는 필수값).
+    query = (
+        db.query(Post)
+        .outerjoin(Post.places)
+        .outerjoin(Place.district)
+        .options(
+            joinedload(Post.category),
+            joinedload(Post.district),
+            contains_eager(Post.places).contains_eager(Place.district),
+        )
+    )
 
     if category_id is not None:
         query = query.filter(Post.category_id == category_id)
@@ -66,17 +77,37 @@ def list_posts(
     else:
         query = query.order_by(desc(Post.created_at))
 
+    # places outer join으로 행이 늘어나는 것을 방지 (게시글당 place가 여러 개인 경우 대비)
+    query = query.distinct()
+
     total = query.count()
     posts = query.offset((page - 1) * size).limit(size).all()
 
-    for post in posts:
-        db.refresh(post)
-
     return {
-        "items": [_serialize_post(db, post) for post in posts],
+        "items": [_serialize_post_list_item(post) for post in posts],
         "total": total,
         "page": page,
         "size": size,
+    }
+
+
+# 게시글을 목록용 응답 딕셔너리로 변환
+def _serialize_post_list_item(post: Post) -> dict[str, Any]:
+    # 한 게시글에는 place가 최대 1개만 연결된다는 전제 하에 첫 번째 항목만 사용한다.
+    place = post.places[0] if post.places else None
+    # place가 태그되어 있으면 place의 지역구를, 없으면 글 자체의 district_id를 사용한다.
+    district = place.district if place else post.district
+    return {
+        "id": post.id,
+        "category_id": post.category.id,
+        "category_code": post.category.code,
+        "category_name": post.category.name,
+        "title": post.title,
+        "views": post.views,
+        "likes": post.likes,
+        "author_name": post.author_name,
+        "place_name": place.name if place else None,
+        "district_name": district.name if district else None,
     }
 
 
