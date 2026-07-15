@@ -19,7 +19,7 @@ class Place(Base):
     description: Mapped[str | None] = mapped_column(Text)
 
     district_id: Mapped[int] = mapped_column(
-        ForeignKey("district.id"), nullable=False, index=True
+        ForeignKey("자치구.id"), nullable=False, index=True
     )
     latitude: Mapped[float] = mapped_column(Float, nullable=False)
     longitude: Mapped[float] = mapped_column(Float, nullable=False)
