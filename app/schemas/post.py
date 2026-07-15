@@ -73,5 +73,18 @@ class LikeOut(BaseModel):
     likes: int
 
 
-class PostListResponse(Page[PostOut]):
+class PostListItem(BaseModel):
+    id: int
+    category_id: int
+    category_code: str
+    category_name: str
+    title: str
+    views: int
+    likes: int
+    author_name: str
+    place_name: str | None
+    district_name: str | None
+
+
+class PostListResponse(Page[PostListItem]):
     pass

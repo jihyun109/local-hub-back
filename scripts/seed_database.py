@@ -25,7 +25,7 @@ SEED_FILES = (
     SCRIPT_DIR / "seed_post_categories.sql",
     SCRIPT_DIR / "seed_places.sql",
 )
-SEEDED_TABLES = ("district", "place_type", "post_category", "place")
+SEEDED_TABLES = ("자치구", "place_type", "post_category", "place")
 
 
 def seed(target: Path | None = None) -> None:

@@ -2,12 +2,13 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from app.crud.place import get_place_by_id, get_places, get_top_places
+from app.crud.place import get_place_by_id, get_place_names, get_places, get_top_places
 from app.db.session import get_db
 from app.schemas.place import (
     DistrictSchema,
     PlaceDetailItem,
     PlaceMainItem,
+    PlaceNameItem,
     PlaceSummaryItem,
     PlaceTypeSchema,
 )
@@ -77,6 +78,13 @@ def get_place_list(
         )
         for place in places
     ]
+
+
+@router.get("/names", response_model=list[PlaceNameItem])
+def get_place_name_list(db: Session = Depends(get_db)):
+    """id/이름 목록만 조회합니다 (드롭다운 등 경량 조회용)."""
+    rows = get_place_names(db)
+    return [PlaceNameItem(id=row.id, name=row.name) for row in rows]
 
 
 @router.get("/{place_id}", response_model=PlaceDetailItem)
